@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Email Generator</title>
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f0f2f5;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+}
+.container {
+    display: flex;
+    gap: 30px;
+    margin-top: 50px;
+    width: 90%;
+    max-width: 900px;
+}
+.main {
+    flex: 2;
+    background: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    text-align: center;
+}
+.instructions {
+    flex: 1;
+    background: #e8f0fe;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    color: #333;
+    font-size: 14px;
+    line-height: 1.6;
+}
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+}
+.logo {
+    display: block;
+    margin: 0 auto 20px auto;
+    width: 120px;
+}
+input[type="text"] {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    margin: 15px 0;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+button {
+    background: linear-gradient(90deg, #007bff, #00bfff);
+    color: #fff;
+    padding: 14px 20px;
+    border: none;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+    transition: 0.3s;
+}
+button:hover {
+    background: linear-gradient(90deg, #0056b3, #0080ff);
+}
+#emailOutput {
+    margin-top: 20px;
+    padding: 20px;
+    background: #f9f9f9;
+    border-left: 5px solid #007bff;
+    min-height: 180px;
+    white-space: pre-wrap;
+    font-size: 15px;
+    line-height: 1.6;
+    text-align: left;
+}
+
+/* Share dropdown styles */
+.share-container {
+    position: relative;
+    margin-top: 15px;
+}
+.share-dropdown {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    min-width: 200px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    border-radius: 8px;
+    z-index: 1;
+    padding: 10px 0;
+}
+.share-dropdown a {
+    color: #333;
+    padding: 10px 20px;
+    text-decoration: none;
+    display: block;
+    font-size: 14px;
+}
+.share-dropdown a:hover { background-color: #f1f1f1; }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="main">
+        <!-- LOGO -->
+        <img class="logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+PHJlY3Qgd2lkdGg9IjI1NiIgaGVpZ2h0PSIyNTYiIGZpbGw9IiMwMDdiZmYiIHJ4PSI1MCIvPjx0ZXh0IHg9IjEyOCIg eT0iMTI4IiBmb250LXNpemU9IjY0IiBmb250LWZhbWlseT0iU2Vnb2UgVUlUIiBmaWxsPSIjZmZmIj4gQUkgPC90ZXh0Pjwvc3ZnPg==" alt="AI Logo">
+
+        <h1>AI Email Generator</h1>
+        <input type="text" id="subject" placeholder="Enter your email subject here...">
+        <button onclick="generateEmail()">Generate Email</button>
+        <div id="emailOutput"></div>
+
+        <!-- Share button -->
+        <div class="share-container">
+            <button onclick="toggleShare()">Share Email</button>
+            <div class="share-dropdown" id="shareDropdown">
+                <a href="#" onclick="shareMessenger()">Messenger</a>
+                <a href="#" onclick="shareWhatsApp()">WhatsApp</a>
+                <a href="#" onclick="shareTwitter()">Twitter</a>
+                <a href="#" onclick="shareFacebook()">Facebook</a>
+                <a href="#" onclick="shareEmail()">Email</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="instructions">
+        <h2>How to use</h2>
+        <ul>
+            <li>Type the subject of your email in the input box.</li>
+            <li>Click "Generate Email".</li>
+            <li>The AI will generate a full email based on your subject.</li>
+            <li>Copy the email and use it wherever you like.</li>
+            <li>Click "Share Email" to share your generated email on Messenger, WhatsApp, Twitter, Facebook, or via Email.</li>
+            <li>This works completely offline for generation, but sharing opens web links.</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+function generateEmail(){
+    const subject = document.getElementById('subject').value.trim();
+    const output = document.getElementById('emailOutput');
+    if(subject === ''){ 
+        output.innerText='Please enter a subject to generate an email.'; 
+        return; 
+    }
+
+    const greetings = ['Hello,','Hi,','Dear Friend,','Greetings,'];
+    const bodies = [
+        `I hope this message finds you well. Regarding your subject "${subject}", I wanted to share some thoughts and provide a detailed explanation to help clarify everything. Please review the following information and let me know your thoughts.`,
+        `Thank you for reaching out about "${subject}". I have carefully considered the matter and compiled a comprehensive overview that should give you all the details you need. I look forward to your feedback.`,
+        `I have received your request concerning "${subject}" and have prepared a detailed message to outline all important points and next steps. Please read through carefully and let me know if you have any questions.`,
+        `Regarding "${subject}", please consider the following points and suggestions that I believe will provide clarity and actionable guidance. I am happy to discuss further if needed.`
+    ];
+    const endings = ['Best regards,','Sincerely,','Kind regards,','Thank you,'];
+    const signatures = ['Your AI Assistant','AI Email Generator','Virtual Assistant'];
+
+    const greeting = greetings[Math.floor(Math.random()*greetings.length)];
+    const body = bodies[Math.floor(Math.random()*bodies.length)];
+    const ending = endings[Math.floor(Math.random()*endings.length)];
+    const signature = signatures[Math.floor(Math.random()*signatures.length)];
+
+    output.innerText = `${greeting}\n\n${body}\n\n${ending}\n${signature}`;
+}
+
+// Share dropdown toggle
+function toggleShare(){
+    const dropdown = document.getElementById('shareDropdown');
+    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+}
+
+// Sharing functions
+function shareMessenger(){
+    const text = encodeURIComponent(document.getElementById('emailOutput').innerText);
+    window.open(`https://www.messenger.com/t/?message=${text}`, '_blank');
+}
+function shareWhatsApp(){
+    const text = encodeURIComponent(document.getElementById('emailOutput').innerText);
+    window.open(`https://wa.me/?text=${text}`, '_blank');
+}
+function shareTwitter(){
+    const text = encodeURIComponent(document.getElementById('emailOutput').innerText);
+    window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
+}
+function shareFacebook(){
+    const text = encodeURIComponent(document.getElementById('emailOutput').innerText);
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=&quote=${text}`, '_blank');
+}
+function shareEmail(){
+    const text = encodeURIComponent(document.getElementById('emailOutput').innerText);
+    window.location.href = `mailto:?subject=Generated Email&body=${text}`;
+}
+</script>
+
+</body>
+</html>
